@@ -1,0 +1,76 @@
+create database dobpractise;
+
+select *from student;
+
+/*to add new column*/
+
+alter table student add column newDOB date;
+
+select *from student;
+
+/*transfer dob data to newdob column in yyyy-mm-dd (default) format */
+
+update student set newDOB = str_to_date(left(DOB,10), '%d-%m-%Y');
+
+select *from student;
+
+/*girls scoring marks less than 92 in maths*/
+
+select FullName, MTest from student
+where Sex = "F" and MTest<92;
+
+/*find age in a new column*
+/
+alter table student add column age int;
+
+update student set age = datediff(current_date(), newDOB);/*age in days*/
+
+update student set age = (datediff(current_date(), newDOB)/365.25);/*age in years*/
+
+/*find age*/
+
+select FullName, newDOB, 
+year(curdate()) - year(newDOB) as ageinyears from student;
+
+/* students who havent submitted the fees*/
+
+select FullName from student
+where Remission = 0;
+
+/*students with district code YMT*/
+
+select FullName from student
+where DCode = "YMT";
+
+/* age calculation round off*/
+
+select fullname,
+round((Datediff(current_date(), NewDOB))/365.25, 2) as ageinyears
+from student;
+
+select fullname, 
+round(((datediff(current_date(), newDOB))/365.25),0) as ageinyears
+from student;
+
+/*age in years using div funtion*/
+
+select fullname,
+(datediff(current_date(), newDOB)/365.25)div 1 as ageinyrs
+from student;
+
+/* to producs age as years and months speparately using div and mod function*
+/
+select fullname,
+(datediff(current_date(), newDOB)/365.25)div 1 as ageyears,
+
+round(((datediff(current_date(), newDOB)/365.25)mod 1 )*12 ,0) as agemonths
+
+from student;
+
+/* to find students born before 01/01/2000 */
+
+select fullname,
+Newdob
+from student
+
+where year(newDOB) < 2000;

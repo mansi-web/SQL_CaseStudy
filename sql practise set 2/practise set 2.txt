@@ -1,0 +1,159 @@
+create database dobpractise;
+
+select *from student;
+
+/*to add new column*/
+
+alter table student add column newDOB date;
+
+select *from student;
+
+/*transfer dob data to newdob column in yyyy-mm-dd (default) format */
+
+update student set newDOB = str_to_date(left(DOB,10), '%d-%m-%Y');
+
+select *from student;
+
+/*girls scoring marks less than 92 in maths*/
+
+select FullName, MTest from student
+where Sex = "F" and MTest<92;
+
+/*find age in a new column*
+/
+alter table student add column age int;
+
+update student set age = datediff(current_date(), newDOB);/*age in days*/
+
+update student set age = (datediff(current_date(), newDOB)/365.25);/*age in years*/
+
+/*find age*/
+
+select FullName, newDOB, 
+year(curdate()) - year(newDOB) as ageinyears from student;
+
+/* students who havent submitted the fees*/
+
+select FullName from student
+where Remission = 0;
+
+/*students with district code YMT*/
+
+select FullName from student
+where DCode = "YMT";
+
+/* age calculation round off*/
+
+select fullname,
+round((Datediff(current_date(), NewDOB))/365.25, 2) as ageinyears
+from student;
+
+select fullname, 
+round(((datediff(current_date(), newDOB))/365.25),0) as ageinyears
+from student;
+
+/*age in years using div funtion*/
+
+select fullname,
+(datediff(current_date(), newDOB)/365.25)div 1 as ageinyrs
+from student;
+
+/* to producs age as years and months speparately using div and mod function*
+/
+select fullname,
+(datediff(current_date(), newDOB)/365.25)div 1 as ageyears,
+
+round(((datediff(current_date(), newDOB)/365.25)mod 1 )*12 ,0) as agemonths
+
+from student;
+
+/* to find students born before 01/01/2000 */
+
+select fullname,
+Newdob
+from student
+
+where year(newDOB) < 2000;
+
+______________________________________________
+create database practiceassignmnet2;
+
+select *from student;
+
+/*1.	Find the students who have IDs in the following set – 1,5,9*/
+
+select ID, fullname from student
+where ID = 1 or ID= 5 or ID=9;
+
+/*2.	List the names of the students who are playing a musical instrument */
+
+select fullname, id from student
+where id in (select id
+from music);
+
+/*3.	List the students who were born on Wednesday or Saturdays */
+
+select fullname from student
+where weekday(newDOB) = 4 or weekday(newDOB)= 7;
+
+SELECT FullNAme, DOB, DayName(NewDOB), WeekDay(NewDOB) as WkDay
+FROM Student
+WHERE WeeKday(NewDOb) IN (2, 5);
+SELECT FullNAme, DOB, DayName(NewDOB), WeekDay(NewDOB) as WkDay
+FROM Student
+WHERE WeeKday(NewDOb) = 2 OR WeeKday(NewDOb) = 5;
+
+/*4. List the students who were not born in January, March, and June (Hint: Use Month(DOB) function) */
+SELECT FullName, MonthName(NewDOB) as MthName, Month(NewDOB) as Mth
+FROM Student 
+wHERE Month(NewDOB) NOT IN (1,3,6);
+
+
+/*4.	List the students who were not born in January, March, and June */
+
+select fullname from student
+where fullname not in (select fullname from student
+where month(newDOB)= 1 or month(newDOB)= 3 or month(newDOB)= 6);
+
+/*5.	List the students who have scored between 70 and 80 and 90 and 100*/
+
+select id, fullname
+from student
+where (MTest>70 and MTest<80 and PTest>90 and Mtest<100) or (Ptest>70 and Ptest<80 and Mtest >90 and MTest<100);
+
+/*6.	List the students whose names contain E*/
+select fullname
+from student
+where fullname like "%e%";
+
+/*7.	List the students who come from Districts ending with T*/
+select fullname, Dcode
+from student
+where Dcode like "%T";
+
+/*8.	List the students whose names contain B as the second last letter*/
+select fullname
+from student
+where fullname like "%b_";
+
+/*9.	List the students who come from districts with M as the third character*/
+select fullname, Dcode
+from student
+where dcode like "__M%";
+
+/*List the students who don’t contain ‘A’ and ‘R’ in their names*/
+
+select fullname
+from student
+where FullName not in (select fullname
+from student
+where fullname like "%A%" and fullname like "%R%");
+
+use not like to make it hsort
+/*11.	List the students whose names contain only these characters - “A” or “B” or “C” or “D”*/
+
+select fullname
+from student
+where fullname not in (select fullname
+from student
+where fullname like "%a%" and fullname like "%b%" and fullname like "%c%" and fullname like "%d%" );
